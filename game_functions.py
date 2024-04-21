@@ -5,9 +5,14 @@ from tetris import Tetris
 from block import Block
 
 
-def check_keydown_events(event):
+def check_keydown_events(stats, event, current_tetris):
 	if event.key == pygame.K_q:
 		sys.exit()
+	elif stats.tetris_controlling is True:
+		if event.key == pygame.K_RIGHT:
+			current_tetris.moving_right = True
+		elif event.key == pygame.K_LEFT:
+			current_tetris.moving_left = True
 
 
 def check_button(config, screen, stats, blocks, play_button, mouse_x, mouse_y):
@@ -22,16 +27,13 @@ def check_events(config, screen, stats, blocks, play_button, current_tetris):
 		if event.type == pygame.QUIT:
 			sys.exit()
 		elif event.type == pygame.KEYDOWN:
-			check_keydown_events(event)
+			check_keydown_events(stats, event, current_tetris)
 		elif event.type == pygame.MOUSEBUTTONDOWN:
 			mouse_x, mouse_y = pygame.mouse.get_pos()
 			check_button(config, screen, stats, blocks, play_button, mouse_x, mouse_y)
-			
 		elif event.type == pygame.USEREVENT + 1:  # == tetris_auto_down_event
-			# tetris_down
-			current_tetris.update_pos(blocks, (0, 1))
-			if stats.tetris_controlling:
-				pygame.time.set_timer(pygame.USEREVENT + 1, 1000)
+			current_tetris.moving_down = True
+			stats.timer_running = False
 
 
 def initialize_blocks(config, screen, blocks):
@@ -63,7 +65,7 @@ def draw_grid(config, screen):
 		pygame.draw.line(screen, config.grid_color, (0, y), (config.screen_width, y))
 
 
-def update_screen(config, screen, stats, blocks, play_button):
+def update_screen(config, screen, stats, blocks, play_button, current_tetris):
 	screen.fill(config.bg_color)
 	
 	if stats.game_active is False:
@@ -72,5 +74,20 @@ def update_screen(config, screen, stats, blocks, play_button):
 	else:
 		draw_blocks(blocks)
 		draw_grid(config, screen)
+	
+	if stats.tetris_controlling:
+		if stats.timer_running is False:
+			stats.timer_running = True
+			pygame.time.set_timer(pygame.USEREVENT + 1, config.block_moving_speed)
+		
+		if current_tetris.moving_left:
+			current_tetris.update_pos(blocks, (-1, 0))
+			current_tetris.moving_left = False
+		elif current_tetris.moving_right:
+			current_tetris.update_pos(blocks, (1, 0))
+			current_tetris.moving_right = False
+		if current_tetris.moving_down:
+			current_tetris.update_pos(blocks, (0, 1))
+			current_tetris.moving_down = False
 	
 	pygame.display.flip()
