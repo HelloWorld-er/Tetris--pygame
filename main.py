@@ -1,9 +1,9 @@
 import pygame
-from pygame.sprite import Group
 
 from settings import Settings
 from game_stats import GameStats
 from button import Button
+from tetris import Tetris
 
 import game_functions
 
@@ -16,7 +16,9 @@ def run_game():
 	
 	stats = GameStats()
 	
-	tetris_group = Group()
+	blocks = []
+	current_tetris = Tetris(config, screen, blocks)
+	# tetris_group = Group()
 	
 	play_button = Button(config, screen, "Play")
 	play_button.rect.center = screen.get_rect().center
@@ -25,12 +27,12 @@ def run_game():
 	tetris_auto_down_event = pygame.USEREVENT + 1
 	
 	while True:
-		game_functions.check_events(stats, play_button)
+		game_functions.check_events(config, screen, stats, blocks, play_button, current_tetris)
 		if stats.game_active:
 			if stats.tetris_controlling is False:
-				game_functions.create_new_tetris(config, screen, stats, tetris_group)
-				pygame.time.set_timer(tetris_auto_down_event, 1000)
-		game_functions.update_screen(config, screen, stats, tetris_group, play_button)
+				game_functions.create_new_tetris(config, screen, stats, blocks, current_tetris)
+				pygame.time.set_timer(tetris_auto_down_event, config.block_moving_speed)
+		game_functions.update_screen(config, screen, stats, blocks, play_button)
 
 
 run_game()
