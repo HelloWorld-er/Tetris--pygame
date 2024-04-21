@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 from tetris import Tetris
 from block import Block
 
@@ -9,13 +10,14 @@ def check_keydown_events(event):
 		sys.exit()
 
 
-def check_button(stats, play_button, mouse_x, mouse_y):
+def check_button(config, screen, stats, blocks, play_button, mouse_x, mouse_y):
 	if play_button.rect.collidepoint(mouse_x, mouse_y) and stats.game_active is False:
 		stats.game_active = True
 		pygame.mouse.set_visible(False)
+		initialize_blocks(config, screen, blocks)
 
 
-def check_events(stats, play_button):
+def check_events(config, screen, stats, blocks, play_button, current_tetris):
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			sys.exit()
@@ -23,43 +25,52 @@ def check_events(stats, play_button):
 			check_keydown_events(event)
 		elif event.type == pygame.MOUSEBUTTONDOWN:
 			mouse_x, mouse_y = pygame.mouse.get_pos()
-			check_button(stats, play_button, mouse_x, mouse_y)
+			check_button(config, screen, stats, blocks, play_button, mouse_x, mouse_y)
+			
 		elif event.type == pygame.USEREVENT + 1:  # == tetris_auto_down_event
 			# tetris_down
+			current_tetris.update_pos(blocks, (0, 1))
 			if stats.tetris_controlling:
 				pygame.time.set_timer(pygame.USEREVENT + 1, 1000)
 
 
-def create_new_tetris(config, screen, stats, tetris_group):
-	tetris = Tetris(config, screen)
-	for block_pos in tetris.pattern:
-		tetris.group.add(Block(tetris.config, tetris.screen, tetris.color, block_pos))
-	tetris.update_pos((0, 0))
-	tetris_group.add(tetris)
-	
-	stats.tetris_controlling = True
-	
+def initialize_blocks(config, screen, blocks):
+	blocks.clear()
+	for row_index in range(config.screen_row):
+		blocks.append([])
+		for column_index in range(config.screen_column):
+			blocks[-1].append(Block(config, screen, config.bg_color, (column_index, row_index)))
+	return blocks
 
-def update_tetris_group(tetris_group):
-	for tetris in tetris_group.sprites():
-		tetris.draw_tetris()
+
+def create_new_tetris(config, screen, stats, blocks, current_tetris):
+	current_tetris.group.empty()
+	current_tetris.origin = [random.randint(0, int(current_tetris.config.screen_column - max([_[0] for _ in current_tetris.pattern]))), 0]
+	current_tetris.update_pos(blocks, (0, 0))
+	stats.tetris_controlling = True
+
+
+def draw_blocks(blocks):
+	for row_index in range(len(blocks)):
+		for column_index in range(len(blocks[0])):
+			blocks[row_index][column_index].draw_block()
 
 
 def draw_grid(config, screen):
 	for x in range(0, config.screen_width, config.block_size):
 		pygame.draw.line(screen, config.grid_color, (x, 0), (x, config.screen_height))
 	for y in range(0, config.screen_height, config.block_size):
-		pygame.draw.line(screen, config.grid_color, (0,y), (config.screen_width, y))
+		pygame.draw.line(screen, config.grid_color, (0, y), (config.screen_width, y))
 
 
-def update_screen(config, screen, stats, tetris_group, play_button):
+def update_screen(config, screen, stats, blocks, play_button):
 	screen.fill(config.bg_color)
 	
 	if stats.game_active is False:
 		draw_grid(config, screen)
 		play_button.draw_button()
 	else:
-		update_tetris_group(tetris_group)
+		draw_blocks(blocks)
 		draw_grid(config, screen)
 	
 	pygame.display.flip()
