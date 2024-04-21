@@ -24,15 +24,13 @@ def run_game():
 	play_button.rect.center = screen.get_rect().center
 	play_button.msg_image_rect.center = play_button.rect.center
 	
-	tetris_auto_down_event = pygame.USEREVENT + 1
-	
 	while True:
 		game_functions.check_events(config, screen, stats, blocks, play_button, current_tetris)
 		if stats.game_active:
 			if stats.tetris_controlling is False:
 				game_functions.create_new_tetris(config, screen, stats, blocks, current_tetris)
-				pygame.time.set_timer(tetris_auto_down_event, config.block_moving_speed)
-		game_functions.update_screen(config, screen, stats, blocks, play_button)
+				# pygame.time.set_timer(pygame.USEREVENT + 1, config.block_moving_speed)
+		game_functions.update_screen(config, screen, stats, blocks, play_button, current_tetris)
 
 
 run_game()
