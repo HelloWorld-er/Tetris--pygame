@@ -17,13 +17,20 @@ def run_game():
 	stats = GameStats()
 	
 	tetris_group = Group()
+	
 	play_button = Button(config, screen, "Play")
 	play_button.rect.center = screen.get_rect().center
 	play_button.msg_image_rect.center = play_button.rect.center
 	
+	tetris_auto_down_event = pygame.USEREVENT + 1
+	
 	while True:
 		game_functions.check_events(stats, play_button)
-		game_functions.update_screen(config, screen, stats, play_button)
+		if stats.game_active:
+			if stats.tetris_controlling is False:
+				game_functions.create_new_tetris(config, screen, stats, tetris_group)
+				pygame.time.set_timer(tetris_auto_down_event, 1000)
+		game_functions.update_screen(config, screen, stats, tetris_group, play_button)
 
 
 run_game()
