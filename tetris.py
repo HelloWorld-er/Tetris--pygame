@@ -1,5 +1,4 @@
 from pygame.sprite import Sprite, Group
-from block import Block
 import random
 
 
@@ -11,10 +10,15 @@ class Tetris(Sprite):
 		self.group = Group()
 		self.color = random.choice(self.config.tetris_colors)[1]
 		self.pattern = random.choice(self.config.tetris_patterns)
-		
-		self.create_fleet()
+		self.origin = [random.randint(0, int(self.config.screen_column - max([_[0] for _ in self.pattern]))), 0]
 	
-	def create_fleet(self):
-		for block_pos in self.pattern:
-			self.group.add(Block(self.config, self.screen, self.color, block_pos))
+	def update_pos(self, origin_pos):
+		self.origin[0] += origin_pos[0]
+		self.origin[1] += origin_pos[1]
+		for block in self.group.sprites():
+			block.update_pos(self.origin)
+	
+	def draw_tetris(self):
+		for block in self.group.sprites():
+			block.draw_block()
 	
