@@ -6,8 +6,8 @@ class Settings():
 		self.grid_color = (0, 0, 0)
 		
 		self.block_size = 20
-		self.screen_row = self.screen_height / self.block_size
-		self.screen_column = self.screen_width / self.block_size
+		self.screen_row = int(self.screen_height / self.block_size)
+		self.screen_column = int(self.screen_width / self.block_size)
 		
 		self.tetris_colors = [
 			(0, 255, 255),  # Cyan
@@ -30,3 +30,5 @@ class Settings():
 			((0, 0), (1, 0), (1, -1), (2, -1)),
 			((0, 0), (1, 0), (0, -1), (1, -1), (0, -2), (1, -2))
 		]
+		
+		self.block_moving_speed = 400
