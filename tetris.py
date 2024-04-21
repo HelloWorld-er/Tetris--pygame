@@ -11,6 +11,10 @@ class Tetris():
 		self.color = random.choice(self.config.tetris_colors)[1]
 		self.pattern = random.choice(self.config.tetris_patterns)
 		
+		self.moving_left = False
+		self.moving_right = False
+		self.moving_down = False
+		
 		self.origin = []
 	
 		# self.origin = [random.randint(0, int(self.config.screen_column - max([_[0] for _ in self.pattern]))), 0]
