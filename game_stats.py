@@ -3,4 +3,7 @@ class GameStats():
 		self.game_active = False
 		self.tetris_controlling = False
 		
-		self.timer_running = False
+		self.auto_timer_running = False
+		self.manual_timer_running = False
+		
+		self.tetris_collide = False
