@@ -69,9 +69,36 @@ def initialize_new_term(config, screen, stats, blocks, current_tetris):
 	stats.tetris_collide = False
 
 
-def update_tetris(config, stats, current_tetris):
+def update_tetris(config, stats, blocks, current_tetris):
 	if (stats.tetris_controlling and current_tetris.bottom_y == config.screen_row - 1) or stats.tetris_collide:
 		stats.tetris_controlling = False
+		check_completed_lines(config, blocks)
+
+
+def check_completed_lines(config, blocks):
+	row_index = 0
+	while row_index < config.screen_row:
+		column_index = 0
+		checker = True
+		while column_index < config.screen_column:
+			if blocks[row_index][column_index].color == config.bg_color:
+				checker = False
+				break
+			column_index += 1
+		if checker:
+			update_completed_line(blocks, row_index)
+		else:
+			row_index += 1
+
+
+def update_completed_line(blocks, row_index):
+	# for block in blocks[row_index]:
+	# 	block.color = config.bg_color
+	
+	while row_index > 0:
+		for column_index in range(len(blocks[row_index])):
+			blocks[row_index][column_index].color = blocks[row_index - 1][column_index].color
+		row_index -= 1
 
 
 def draw_blocks(blocks):
@@ -110,7 +137,7 @@ def update_screen(config, screen, stats, blocks, play_button, current_tetris):
 				current_tetris.rotate(blocks)
 		
 		if stats.auto_timer_running is False:
-			stats.timer_running = True
+			stats.auto_timer_running = True
 			pygame.time.set_timer(pygame.USEREVENT + 1, config.tetris_auto_moving_speed)
 			
 			if current_tetris.moving_down:
