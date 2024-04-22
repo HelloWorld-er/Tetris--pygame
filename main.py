@@ -31,7 +31,6 @@ def run_game():
 			if stats.tetris_controlling is False:
 				game_functions.create_new_tetris(config, screen, stats, blocks, current_tetris)
 			game_functions.update_tetris(config, stats, current_tetris)
-			# game_functions.update_timer_event()
 		game_functions.update_screen(config, screen, stats, blocks, play_button, current_tetris)
 
 
