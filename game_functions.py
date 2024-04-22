@@ -8,11 +8,19 @@ from block import Block
 def check_keydown_events(stats, event, current_tetris):
 	if event.key == pygame.K_q:
 		sys.exit()
-	elif stats.tetris_controlling is True:
+	elif stats.tetris_controlling:
 		if event.key == pygame.K_RIGHT:
 			current_tetris.moving_right = True
 		elif event.key == pygame.K_LEFT:
 			current_tetris.moving_left = True
+
+
+def check_keyup_events(stats, event, current_tetris):
+		if stats.tetris_controlling:
+			if event.key == pygame.K_RIGHT:
+				current_tetris.moving_right = False
+			elif event.key == pygame.K_LEFT:
+				current_tetris.moving_left = False
 
 
 def check_button(config, screen, stats, blocks, play_button, mouse_x, mouse_y):
@@ -28,10 +36,12 @@ def check_events(config, screen, stats, blocks, play_button, current_tetris):
 			sys.exit()
 		elif event.type == pygame.KEYDOWN:
 			check_keydown_events(stats, event, current_tetris)
+		elif event.type == pygame.KEYUP:
+			check_keyup_events(stats, event, current_tetris)
 		elif event.type == pygame.MOUSEBUTTONDOWN:
 			mouse_x, mouse_y = pygame.mouse.get_pos()
 			check_button(config, screen, stats, blocks, play_button, mouse_x, mouse_y)
-		elif event.type == pygame.USEREVENT + 1:  # == tetris_auto_down_event
+		elif stats.tetris_controlling and event.type == pygame.USEREVENT + 1:  # == tetris_auto_down_event
 			current_tetris.moving_down = True
 			stats.timer_running = False
 
@@ -46,10 +56,13 @@ def initialize_blocks(config, screen, blocks):
 
 
 def create_new_tetris(config, screen, stats, blocks, current_tetris):
-	current_tetris.group.empty()
-	current_tetris.origin = [random.randint(0, int(current_tetris.config.screen_column - max([_[0] for _ in current_tetris.pattern]))), 0]
-	current_tetris.update_pos(blocks, (0, 0))
+	current_tetris.initialize_tetris(blocks)
 	stats.tetris_controlling = True
+
+
+def update_tetris(config, stats, current_tetris):
+	if stats.tetris_controlling and current_tetris.origin[1] == config.screen_row - 1:
+		stats.tetris_controlling = False
 
 
 def draw_blocks(blocks):
@@ -82,10 +95,8 @@ def update_screen(config, screen, stats, blocks, play_button, current_tetris):
 		
 		if current_tetris.moving_left:
 			current_tetris.update_pos(blocks, (-1, 0))
-			current_tetris.moving_left = False
 		elif current_tetris.moving_right:
 			current_tetris.update_pos(blocks, (1, 0))
-			current_tetris.moving_right = False
 		if current_tetris.moving_down:
 			current_tetris.update_pos(blocks, (0, 1))
 			current_tetris.moving_down = False
