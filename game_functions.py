@@ -1,7 +1,5 @@
 import pygame
 import sys
-import random
-from tetris import Tetris
 from block import Block
 
 
@@ -45,12 +43,13 @@ def check_events(config, screen, stats, blocks, play_button, current_tetris):
 		elif event.type == pygame.MOUSEBUTTONDOWN:
 			mouse_x, mouse_y = pygame.mouse.get_pos()
 			check_button(config, screen, stats, blocks, play_button, mouse_x, mouse_y)
-		elif stats.tetris_controlling and event.type == pygame.USEREVENT + 1:  # == tetris_auto_down_event
+		elif stats.tetris_controlling and event.type == pygame.USEREVENT + 1:
+			stats.manual_timer_running = False
+		elif stats.tetris_controlling and event.type == pygame.USEREVENT + 2:
+			stats.rotate_timer_running = False
+		elif stats.tetris_controlling and event.type == pygame.USEREVENT + 3:
 			current_tetris.moving_down = True
 			stats.auto_timer_running = False
-		elif stats.tetris_controlling and event.type == pygame.USEREVENT + 2:
-			current_tetris.moving_down = True
-			stats.manual_timer_running = False
 
 
 def initialize_blocks(config, screen, blocks):
@@ -92,9 +91,6 @@ def check_completed_lines(config, blocks):
 
 
 def update_completed_line(blocks, row_index):
-	# for block in blocks[row_index]:
-	# 	block.color = config.bg_color
-	
 	while row_index > 0:
 		for column_index in range(len(blocks[row_index])):
 			blocks[row_index][column_index].color = blocks[row_index - 1][column_index].color
@@ -108,10 +104,10 @@ def draw_blocks(blocks):
 
 
 def draw_grid(config, screen):
-	for x in range(0, config.screen_width, config.block_size):
-		pygame.draw.line(screen, config.grid_color, (x, 0), (x, config.screen_height))
-	for y in range(0, config.screen_height, config.block_size):
-		pygame.draw.line(screen, config.grid_color, (0, y), (config.screen_width, y))
+	for x in range(0, config.play_screen_width, config.block_size):
+		pygame.draw.line(screen, config.grid_color, (x, 0), (x, config.play_screen_height))
+	for y in range(0, config.play_screen_height, config.block_size):
+		pygame.draw.line(screen, config.grid_color, (0, y), (config.play_screen_width, y))
 
 
 def update_screen(config, screen, stats, blocks, play_button, current_tetris):
@@ -127,7 +123,7 @@ def update_screen(config, screen, stats, blocks, play_button, current_tetris):
 	if stats.tetris_controlling and not stats.tetris_collide:
 		if stats.manual_timer_running is False:
 			stats.manual_timer_running = True
-			pygame.time.set_timer(pygame.USEREVENT + 2, config.tetris_manual_moving_speed)
+			pygame.time.set_timer(pygame.USEREVENT + 1, config.tetris_manual_moving_speed)
 			
 			if current_tetris.moving_left:
 				current_tetris.update_pos(blocks, (-1, 0))
@@ -136,13 +132,16 @@ def update_screen(config, screen, stats, blocks, play_button, current_tetris):
 			elif current_tetris.rotate_tetris:
 				current_tetris.rotate(blocks)
 		
+		if stats.rotate_timer_running is False:
+			stats.rotate_timer_running = True
+			pygame.time.set_timer(pygame.USEREVENT + 2, config.tetris_rotate_speed)
+		
 		if stats.auto_timer_running is False:
 			stats.auto_timer_running = True
-			pygame.time.set_timer(pygame.USEREVENT + 1, config.tetris_auto_moving_speed)
+			pygame.time.set_timer(pygame.USEREVENT + 3, config.tetris_auto_moving_speed)
 			
 			if current_tetris.moving_down:
 				current_tetris.update_pos(blocks, (0, 1))
 				current_tetris.moving_down = False
 			
-	
 	pygame.display.flip()
