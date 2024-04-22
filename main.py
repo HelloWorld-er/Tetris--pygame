@@ -26,10 +26,9 @@ def run_game():
 	while True:
 		game_functions.check_events(config, screen, stats, blocks, play_button, current_tetris)
 		if stats.game_active:
-			
 			if stats.tetris_controlling is False:
 				game_functions.initialize_new_term(config, screen, stats, blocks, current_tetris)
-			game_functions.update_tetris(config, stats, current_tetris)
+			game_functions.update_tetris(config, stats, blocks, current_tetris)
 		game_functions.update_screen(config, screen, stats, blocks, play_button, current_tetris)
 
 
