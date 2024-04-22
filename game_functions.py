@@ -13,6 +13,8 @@ def check_keydown_events(stats, event, current_tetris):
 			current_tetris.moving_right = True
 		elif event.key == pygame.K_LEFT:
 			current_tetris.moving_left = True
+		elif event.key == pygame.K_UP:
+			current_tetris.rotate_tetris = True
 
 
 def check_keyup_events(stats, event, current_tetris):
@@ -21,6 +23,8 @@ def check_keyup_events(stats, event, current_tetris):
 				current_tetris.moving_right = False
 			elif event.key == pygame.K_LEFT:
 				current_tetris.moving_left = False
+			elif event.key == pygame.K_UP:
+				current_tetris.rotate_tetris = False
 
 
 def check_button(config, screen, stats, blocks, play_button, mouse_x, mouse_y):
@@ -43,7 +47,10 @@ def check_events(config, screen, stats, blocks, play_button, current_tetris):
 			check_button(config, screen, stats, blocks, play_button, mouse_x, mouse_y)
 		elif stats.tetris_controlling and event.type == pygame.USEREVENT + 1:  # == tetris_auto_down_event
 			current_tetris.moving_down = True
-			stats.timer_running = False
+			stats.auto_timer_running = False
+		elif stats.tetris_controlling and event.type == pygame.USEREVENT + 2:
+			current_tetris.moving_down = True
+			stats.manual_timer_running = False
 
 
 def initialize_blocks(config, screen, blocks):
@@ -55,13 +62,15 @@ def initialize_blocks(config, screen, blocks):
 	return blocks
 
 
-def create_new_tetris(config, screen, stats, blocks, current_tetris):
+def initialize_new_term(config, screen, stats, blocks, current_tetris):
 	current_tetris.initialize_tetris(blocks)
 	stats.tetris_controlling = True
+	
+	stats.tetris_collide = False
 
 
 def update_tetris(config, stats, current_tetris):
-	if stats.tetris_controlling and current_tetris.origin[1] == config.screen_row - 1:
+	if (stats.tetris_controlling and current_tetris.bottom_y == config.screen_row - 1) or stats.tetris_collide:
 		stats.tetris_controlling = False
 
 
@@ -88,17 +97,25 @@ def update_screen(config, screen, stats, blocks, play_button, current_tetris):
 		draw_blocks(blocks)
 		draw_grid(config, screen)
 	
-	if stats.tetris_controlling:
-		if stats.timer_running is False:
-			stats.timer_running = True
-			pygame.time.set_timer(pygame.USEREVENT + 1, config.block_moving_speed)
+	if stats.tetris_controlling and not stats.tetris_collide:
+		if stats.manual_timer_running is False:
+			stats.manual_timer_running = True
+			pygame.time.set_timer(pygame.USEREVENT + 2, config.tetris_manual_moving_speed)
+			
+			if current_tetris.moving_left:
+				current_tetris.update_pos(blocks, (-1, 0))
+			elif current_tetris.moving_right:
+				current_tetris.update_pos(blocks, (1, 0))
+			elif current_tetris.rotate_tetris:
+				current_tetris.rotate(blocks)
 		
-		if current_tetris.moving_left:
-			current_tetris.update_pos(blocks, (-1, 0))
-		elif current_tetris.moving_right:
-			current_tetris.update_pos(blocks, (1, 0))
-		if current_tetris.moving_down:
-			current_tetris.update_pos(blocks, (0, 1))
-			current_tetris.moving_down = False
+		if stats.auto_timer_running is False:
+			stats.timer_running = True
+			pygame.time.set_timer(pygame.USEREVENT + 1, config.tetris_auto_moving_speed)
+			
+			if current_tetris.moving_down:
+				current_tetris.update_pos(blocks, (0, 1))
+				current_tetris.moving_down = False
+			
 	
 	pygame.display.flip()
