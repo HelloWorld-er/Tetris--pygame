@@ -17,8 +17,7 @@ def run_game():
 	stats = GameStats()
 	
 	blocks = []
-	current_tetris = Tetris(config, screen)
-	# tetris_group = Group()
+	current_tetris = Tetris(config, screen, stats)
 	
 	play_button = Button(config, screen, "Play")
 	play_button.rect.center = screen.get_rect().center
@@ -29,7 +28,7 @@ def run_game():
 		if stats.game_active:
 			
 			if stats.tetris_controlling is False:
-				game_functions.create_new_tetris(config, screen, stats, blocks, current_tetris)
+				game_functions.initialize_new_term(config, screen, stats, blocks, current_tetris)
 			game_functions.update_tetris(config, stats, current_tetris)
 		game_functions.update_screen(config, screen, stats, blocks, play_button, current_tetris)
 
