@@ -17,7 +17,7 @@ def run_game():
 	stats = GameStats()
 	
 	blocks = []
-	current_tetris = Tetris(config, screen, blocks)
+	current_tetris = Tetris(config, screen)
 	# tetris_group = Group()
 	
 	play_button = Button(config, screen, "Play")
@@ -27,9 +27,11 @@ def run_game():
 	while True:
 		game_functions.check_events(config, screen, stats, blocks, play_button, current_tetris)
 		if stats.game_active:
+			
 			if stats.tetris_controlling is False:
 				game_functions.create_new_tetris(config, screen, stats, blocks, current_tetris)
-				# pygame.time.set_timer(pygame.USEREVENT + 1, config.block_moving_speed)
+			game_functions.update_tetris(config, stats, current_tetris)
+			# game_functions.update_timer_event()
 		game_functions.update_screen(config, screen, stats, blocks, play_button, current_tetris)
 
 
