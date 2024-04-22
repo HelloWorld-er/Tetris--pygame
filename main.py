@@ -21,6 +21,7 @@ def run_game():
 	
 	play_button = Button(config, screen, "Play")
 	play_button.rect.center = screen.get_rect().center
+	play_button.rect.x -= 100
 	play_button.msg_image_rect.center = play_button.rect.center
 	
 	while True:
