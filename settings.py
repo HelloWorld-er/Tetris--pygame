@@ -31,5 +31,5 @@ class Settings():
 			((0, 0), (1, 0), (0, -1), (1, -1), (0, -2), (1, -2))
 		]
 		
-		self.tetris_auto_moving_speed = 50
+		self.tetris_auto_moving_speed = 100
 		self.tetris_manual_moving_speed = 40
