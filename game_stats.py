@@ -5,5 +5,6 @@ class GameStats():
 		
 		self.auto_timer_running = False
 		self.manual_timer_running = False
+		self.rotate_timer_running = False
 		
 		self.tetris_collide = False
