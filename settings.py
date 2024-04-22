@@ -1,13 +1,16 @@
 class Settings():
 	def __init__(self):
-		self.screen_width = 600
+		self.screen_width = 800
 		self.screen_height = 800
+		
+		self.play_screen_width = 600
+		self.play_screen_height = 800
 		self.bg_color = (230, 230, 230)
 		self.grid_color = (0, 0, 0)
 		
 		self.block_size = 20
-		self.screen_row = int(self.screen_height / self.block_size)
-		self.screen_column = int(self.screen_width / self.block_size)
+		self.screen_row = int(self.play_screen_height / self.block_size)
+		self.screen_column = int(self.play_screen_width / self.block_size)
 		
 		self.tetris_colors = [
 			(0, 255, 255),  # Cyan
@@ -33,3 +36,4 @@ class Settings():
 		
 		self.tetris_auto_moving_speed = 100
 		self.tetris_manual_moving_speed = 70
+		self.tetris_rotate_speed = 100
