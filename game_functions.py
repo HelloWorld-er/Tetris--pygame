@@ -119,6 +119,7 @@ def update_screen(config, screen, stats, blocks, play_button, current_tetris):
 	else:
 		draw_blocks(blocks)
 		draw_grid(config, screen)
+		# scoreboard.draw_scoreboard()
 	
 	if stats.tetris_controlling and not stats.tetris_collide:
 		if stats.manual_timer_running is False:
