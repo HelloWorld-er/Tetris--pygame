@@ -1,11 +1,13 @@
+import os
 import pygame
-import sys
+# import sys
 from block import Block
 
 
-def check_keydown_events(stats, event, current_tetris):
+def check_keydown_events(stats, event, scoreboard_window, current_tetris):
 	if event.key == pygame.K_q:
-		sys.exit()
+		scoreboard_window.store_data()
+		pygame.quit()
 	elif stats.tetris_controlling:
 		if event.key == pygame.K_RIGHT:
 			current_tetris.moving_right = True
@@ -16,33 +18,35 @@ def check_keydown_events(stats, event, current_tetris):
 
 
 def check_keyup_events(stats, event, current_tetris):
-		if stats.tetris_controlling:
-			if event.key == pygame.K_RIGHT:
-				current_tetris.moving_right = False
-			elif event.key == pygame.K_LEFT:
-				current_tetris.moving_left = False
-			elif event.key == pygame.K_UP:
-				current_tetris.rotate_tetris = False
+	if stats.tetris_controlling:
+		if event.key == pygame.K_RIGHT:
+			current_tetris.moving_right = False
+		elif event.key == pygame.K_LEFT:
+			current_tetris.moving_left = False
+		elif event.key == pygame.K_UP:
+			current_tetris.rotate_tetris = False
 
 
-def check_button(config, screen, stats, blocks, play_button, mouse_x, mouse_y):
+def check_button(config, screen, stats, scoreboard_window, blocks, play_button, mouse_x, mouse_y):
 	if play_button.rect.collidepoint(mouse_x, mouse_y) and stats.game_active is False:
 		stats.game_active = True
 		pygame.mouse.set_visible(False)
 		initialize_blocks(config, screen, blocks)
+		scoreboard_window.initialize_records()
 
 
-def check_events(config, screen, stats, blocks, play_button, current_tetris):
+def check_events(config, screen, stats, scoreboard_window, blocks, play_button, current_tetris):
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
-			sys.exit()
+			scoreboard_window.store_data()
+			pygame.quit()
 		elif event.type == pygame.KEYDOWN:
-			check_keydown_events(stats, event, current_tetris)
+			check_keydown_events(stats, event, scoreboard_window, current_tetris)
 		elif event.type == pygame.KEYUP:
 			check_keyup_events(stats, event, current_tetris)
 		elif event.type == pygame.MOUSEBUTTONDOWN:
 			mouse_x, mouse_y = pygame.mouse.get_pos()
-			check_button(config, screen, stats, blocks, play_button, mouse_x, mouse_y)
+			check_button(config, screen, stats, scoreboard_window, blocks, play_button, mouse_x, mouse_y)
 		elif stats.tetris_controlling and event.type == pygame.USEREVENT + 1:
 			stats.manual_timer_running = False
 		elif stats.tetris_controlling and event.type == pygame.USEREVENT + 2:
@@ -119,7 +123,7 @@ def update_screen(config, screen, stats, blocks, play_button, current_tetris):
 	else:
 		draw_blocks(blocks)
 		draw_grid(config, screen)
-		# scoreboard.draw_scoreboard()
+	# scoreboard.draw_scoreboard()
 	
 	if stats.tetris_controlling and not stats.tetris_collide:
 		if stats.manual_timer_running is False:
@@ -144,5 +148,5 @@ def update_screen(config, screen, stats, blocks, play_button, current_tetris):
 			if current_tetris.moving_down:
 				current_tetris.update_pos(blocks, (0, 1))
 				current_tetris.moving_down = False
-			
+	
 	pygame.display.flip()
