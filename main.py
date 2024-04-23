@@ -1,36 +1,27 @@
-import pygame
+import os
+import tkinter as tk
 
+import tetris_game
 from settings import Settings
-from game_stats import GameStats
-from button import Button
-from tetris import Tetris
-
-import game_functions
 
 
-def run_game():
-	pygame.init()
+def run_program():
+	root = tk.Tk()
+	root.title("Tetris")
 	config = Settings()
-	screen = pygame.display.set_mode((config.screen_width, config.screen_height))
-	pygame.display.set_caption("Tetris")
+	# root.geometry(f"{config.screen_width}x{config.screen_height}+{int((root.winfo_screenwidth()-config.screen_width)/2)}+{int((root.winfo_screenheight()-config.screen_height)/2)}")
+	root.geometry(f"{config.screen_width}x{config.screen_height}")
+	# game_window = tk.Frame(root, width=config.play_screen_width, height=config.play_screen_height)
+	# game_window.grid(row=0, column=0)
 	
-	stats = GameStats()
+	# os.environ["SDL_WINDOWID"] = str(game_window.winfo_id())
 	
-	blocks = []
-	current_tetris = Tetris(config, screen, stats)
+	# label = tk.Label(root, text="hello")
+	# label.grid(row=0, column=1)
 	
-	play_button = Button(config, screen, "Play")
-	play_button.rect.center = screen.get_rect().center
-	play_button.rect.x -= 100
-	play_button.msg_image_rect.center = play_button.rect.center
+	root.mainloop()
 	
-	while True:
-		game_functions.check_events(config, screen, stats, blocks, play_button, current_tetris)
-		if stats.game_active:
-			if stats.tetris_controlling is False:
-				game_functions.initialize_new_term(config, screen, stats, blocks, current_tetris)
-			game_functions.update_tetris(config, stats, blocks, current_tetris)
-		game_functions.update_screen(config, screen, stats, blocks, play_button, current_tetris)
+	# tetris_game.run_game(config)
 
 
-run_game()
+run_program()
