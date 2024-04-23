@@ -40,7 +40,7 @@ class ScoreBoard():
 	def initialize_records(self):
 		with open("users_data.json", "r+") as users_data_file:
 			users_data = json.load(users_data_file)
-			print(users_data)
+			# print(users_data)
 			if users_data:
 				self.highest_score = users_data['highest']['score']
 				if self.username in users_data:
@@ -53,6 +53,9 @@ class ScoreBoard():
 			
 			users_data_file.seek(0, 0)
 			json.dump(users_data, users_data_file, indent=4)
+		
+		# print(self.highest_score)
+		# print(self.user_highest_score)
 		
 		self.update_records()
 	
