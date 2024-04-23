@@ -9,14 +9,18 @@ from tetris import Tetris
 import game_functions
 
 
-def run_game(config, stats, scoreboard_window, user_board_window, x=0, y=0):
-	scoreboard_window.username = user_board_window.username
+def run_game(config, stats, scoreboard_window, x=0, y=0):
+	if not stats.login:
+		return
+	
 	os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
 	
 	pygame.init()
 	
 	screen = pygame.display.set_mode((config.play_screen_width, config.play_screen_height))
 	pygame.display.set_caption("Tetris")
+	
+	stats.re_initialize()
 	
 	blocks = []
 	current_tetris = Tetris(config, screen, stats)
