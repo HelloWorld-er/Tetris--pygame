@@ -1,5 +1,7 @@
 class GameStats():
 	def __init__(self):
+		self.login = False
+		
 		self.game_active = False
 		self.tetris_controlling = False
 		
