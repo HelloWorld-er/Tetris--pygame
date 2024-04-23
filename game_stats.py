@@ -10,3 +10,13 @@ class GameStats():
 		self.rotate_timer_running = False
 		
 		self.tetris_collide = False
+	
+	def re_initialize(self):
+		self.game_active = False
+		self.tetris_controlling = False
+		
+		self.auto_timer_running = False
+		self.manual_timer_running = False
+		self.rotate_timer_running = False
+		
+		self.tetris_collide = False
