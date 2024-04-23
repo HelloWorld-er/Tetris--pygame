@@ -35,7 +35,4 @@ def run_program():
 	root.mainloop()
 
 
-# def login():
-
-
 run_program()
