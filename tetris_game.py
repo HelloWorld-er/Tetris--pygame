@@ -1,4 +1,3 @@
-import os
 import pygame
 
 from settings import Settings
@@ -9,15 +8,14 @@ from tetris import Tetris
 import game_functions
 
 
-def run_game(config, stats, scoreboard_window, x=0, y=0):
-	if not stats.login:
-		return
-	
-	os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
+def run_game():
 	
 	pygame.init()
 	
-	screen = pygame.display.set_mode((config.play_screen_width, config.play_screen_height))
+	config = Settings()
+	stats = GameStats()
+	
+	screen = pygame.display.set_mode((config.screen_width, config.screen_height))
 	pygame.display.set_caption("Tetris")
 	
 	blocks = []
@@ -25,15 +23,17 @@ def run_game(config, stats, scoreboard_window, x=0, y=0):
 	
 	play_button = Button(config, screen, "Play")
 	play_button.rect.center = screen.get_rect().center
-	# play_button.rect.x -= int((config.screen_width - config.play_screen_width) / 2)
+	play_button.rect.centerx -= int(config.scoreboard_width / 2)
+	
 	play_button.msg_image_rect.center = play_button.rect.center
 	
-	# scoreboard = ScoreBoard(config, screen)
-	
 	while True:
-		game_functions.check_events(config, screen, stats, scoreboard_window, blocks, play_button, current_tetris)
+		game_functions.check_events(config, screen, stats, blocks, play_button, current_tetris)
 		if stats.game_active:
 			if stats.tetris_controlling is False:
 				game_functions.initialize_new_term(config, screen, stats, blocks, current_tetris)
-			game_functions.update_tetris(config, stats, scoreboard_window, blocks, current_tetris)
+			game_functions.update_tetris(config, stats, blocks, current_tetris)
 		game_functions.update_screen(config, screen, stats, blocks, play_button, current_tetris)
+
+
+run_game()
