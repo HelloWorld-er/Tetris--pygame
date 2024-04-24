@@ -1,7 +1,9 @@
+import threading
+
 import tkinter as tk
 from tkinter import font
 
-import tetris_game
+import interface_function
 from settings import Settings
 from game_stats import GameStats
 from scoreboard import ScoreBoard
@@ -30,7 +32,7 @@ def run_program():
 	
 	game_window_button = tk.Button(game_window, text="Game Window", font=font.Font(size=40))
 	game_window_button.place(relwidth=1, relheight=1, relx=0.5, rely=0.5, anchor='center')
-	game_window_button.config(command=lambda: tetris_game.run_game(config, stats, scoreboard_window, int((root.winfo_screenwidth() - config.screen_width) / 2),0))
+	game_window_button.config(command=lambda: interface_function.prep_run_game(config, stats, scoreboard_window, int((root.winfo_screenwidth() - config.screen_width) / 2),0))
 	
 	root.mainloop()
 
