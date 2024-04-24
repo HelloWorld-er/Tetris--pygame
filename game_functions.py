@@ -1,15 +1,12 @@
-import os
 import pygame
-# import sys
+import sys
 from block import Block
 
 
-def check_keydown_events(stats, event, scoreboard_window, current_tetris):
+def check_keydown_events(stats, event, current_tetris):
 	if event.key == pygame.K_q:
-		scoreboard_window.store_data()
-		stats.re_initialize()
-		pygame.mouse.set_visible(True)
-		pygame.quit()
+		# pygame.quit()
+		sys.exit()
 	elif stats.tetris_controlling:
 		if event.key == pygame.K_RIGHT:
 			current_tetris.moving_right = True
@@ -36,15 +33,13 @@ def check_button(config, screen, stats, blocks, play_button, mouse_x, mouse_y):
 		initialize_blocks(config, screen, blocks)
 
 
-def check_events(config, screen, stats, scoreboard_window, blocks, play_button, current_tetris):
+def check_events(config, screen, stats, blocks, play_button, current_tetris):
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
-			scoreboard_window.store_data()
-			stats.re_initialize()
-			pygame.mouse.set_visible(True)
-			pygame.quit()
+			# pygame.quit()
+			sys.exit()
 		elif event.type == pygame.KEYDOWN:
-			check_keydown_events(stats, event, scoreboard_window, current_tetris)
+			check_keydown_events(stats, event, current_tetris)
 		elif event.type == pygame.KEYUP:
 			check_keyup_events(stats, event, current_tetris)
 		elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -75,13 +70,13 @@ def initialize_new_term(config, screen, stats, blocks, current_tetris):
 	stats.tetris_collide = False
 
 
-def update_tetris(config, stats, scoreboard_window, blocks, current_tetris):
+def update_tetris(config, stats, blocks, current_tetris):
 	if (stats.tetris_controlling and current_tetris.bottom_y == config.screen_row - 1) or stats.tetris_collide:
 		stats.tetris_controlling = False
-		check_completed_lines(config, scoreboard_window, blocks)
+		check_completed_lines(config, blocks)
 
 
-def check_completed_lines(config, scoreboard_window, blocks):
+def check_completed_lines(config, blocks):
 	row_index = 0
 	while row_index < config.screen_row:
 		column_index = 0
@@ -93,8 +88,6 @@ def check_completed_lines(config, scoreboard_window, blocks):
 			column_index += 1
 		if checker:
 			update_completed_line(blocks, row_index)
-			scoreboard_window.user_current_score += config.screen_column
-			scoreboard_window.update_records()
 		else:
 			row_index += 1
 
