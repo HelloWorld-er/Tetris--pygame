@@ -15,8 +15,6 @@ class ScoreBoard():
 		self.user_highest_score = 0
 		self.user_current_score = 0
 		
-		# self.initialize_records()
-		
 		self.font = font.Font(size=15)
 		
 		self.highest_score_label = tk.Label(self.window, text=f"Highest score(every users):\n{self.highest_score}",
@@ -38,6 +36,10 @@ class ScoreBoard():
 		self.user_current_score_label.pack(fill="x", side=tk.TOP)
 	
 	def initialize_records(self):
+		self.highest_score = 0
+		self.user_highest_score = 0
+		self.user_current_score = 0
+		
 		with open("users_data.json", "r+") as users_data_file:
 			users_data = json.load(users_data_file)
 			# print(users_data)
