@@ -9,8 +9,8 @@ class Settings():
 		self.scoreboard_width = self.screen_width - self.play_screen_width
 		self.scoreboard_height = int(self.screen_height/4)
 		
-		self.userboard_width = self.screen_width - self.play_screen_width
-		self.userboard_height = int(self.screen_height/4)
+		# self.userboard_width = self.screen_width - self.play_screen_width
+		# self.userboard_height = int(self.screen_height/4)
 		
 		self.bg_color = (230, 230, 230)
 		self.grid_color = (0, 0, 0)
