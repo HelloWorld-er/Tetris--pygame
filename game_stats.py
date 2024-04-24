@@ -10,6 +10,8 @@ class GameStats():
 		self.rotate_timer_running = False
 		
 		self.tetris_collide = False
+		
+		self.user_current_score = 0
 	
 	def re_initialize(self):
 		self.game_active = False
@@ -20,3 +22,5 @@ class GameStats():
 		self.rotate_timer_running = False
 		
 		self.tetris_collide = False
+		
+		self.user_current_score = 0
