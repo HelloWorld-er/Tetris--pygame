@@ -1,82 +1,50 @@
-import json
-import tkinter as tk
-from tkinter import font
+import pygame
+from pygame.rect import Rect
+import pygame.font
 
 
 class ScoreBoard():
-	def __init__(self, root, config, stats):
+	def __init__(self, config, stats, screen):
 		self.config = config
+		self.screen = screen
 		
-		self.window = tk.Frame(root, borderwidth=1, relief="solid")
-		
-		self.username = None
+		self.bg_color = self.config.bg_color
+		self.text_color = (0, 0, 0)
 		
 		self.highest_score = 0
-		self.user_highest_score = 0
-		self.user_current_score = 0
+		self.current_score = 0
 		
-		self.font = font.Font(size=15)
+		self.font = pygame.font.SysFont(None, 30)
+		self.width = self.config.scoreboard_width
+		self.height = 50
 		
-		self.highest_score_label = tk.Label(self.window, text=f"Highest score(every users):\n{self.highest_score}",
-		                                    font=self.font)
-		self.user_highest_score_label = tk.Label(self.window,
-		                                         text=f"Highest score(current user):\n{self.user_highest_score}",
-		                                         font=self.font)
-		self.user_current_score_label = tk.Label(self.window, text=f"Current score:\n{self.user_current_score}",
-		                                         font=self.font)
+		self.highest_score_rect = Rect(5 + self.config.play_screen_width, 10, self.width, self.height)
+		self.current_score_rect = Rect(5 + self.config.play_screen_width, 10 + self.height, self.width, self.height)
 		
-		self.update_records()
+		self.highest_score_hint = "Highest Score: "
+		self.current_score_hint = "Current Score: "
+		
+		self.prep_msg()
 	
-	def place_scoreboard(self):
-		self.window.place(relx=self.config.play_screen_width / self.config.screen_width, rely=0,
-		                  relwidth=self.config.scoreboard_width / self.config.screen_width,
-		                  relheight=self.config.scoreboard_height / self.config.screen_height)
-		self.highest_score_label.pack(fill="x", side=tk.TOP)
-		self.user_highest_score_label.pack(fill="x", side=tk.TOP)
-		self.user_current_score_label.pack(fill="x", side=tk.TOP)
-	
-	def initialize_records(self):
-		self.highest_score = 0
-		self.user_highest_score = 0
-		self.user_current_score = 0
+	def prep_msg(self):
+		self.highest_score_msg_image = self.font.render(self.highest_score_hint + str(self.highest_score), True, self.text_color, self.bg_color)
+		self.highest_score_msg_image_rect = self.highest_score_msg_image.get_rect()
+		self.highest_score_msg_image_rect.x = self.highest_score_rect.x
+		self.highest_score_msg_image_rect.centery = self.highest_score_rect.centery
 		
-		with open("users_data.json", "r+") as users_data_file:
-			users_data = json.load(users_data_file)
-			# print(users_data)
-			if users_data:
-				self.highest_score = users_data['highest']['score']
-				if self.username in users_data:
-					self.user_highest_score = users_data[self.username]['score']
-				else:
-					users_data[self.username] = {"score": 0}
-			else:
-				users_data['highest'] = {"username": None, "score": 0}
-				users_data[self.username] = {"score": 0}
+		self.current_score_msg_image = self.font.render(self.current_score_hint + str(self.current_score), True, self.text_color, self.bg_color)
+		self.current_score_msg_image_rect = self.current_score_msg_image.get_rect()
+		self.current_score_msg_image_rect.x = self.current_score_rect.x
+		self.current_score_msg_image_rect.centery = self.current_score_rect.centery
+	
+	def draw_scoreboard(self):
+		self.screen.fill(self.bg_color, self.highest_score_rect)
+		self.screen.blit(self.highest_score_msg_image, self.highest_score_msg_image_rect)
+		
+		self.screen.fill(self.bg_color, self.current_score_rect)
+		self.screen.blit(self.current_score_msg_image, self.current_score_msg_image_rect)
+		
+	def update_score(self):
+		if self.highest_score <= self.current_score:
+			self.highest_score = self.current_score
 			
-			users_data_file.seek(0, 0)
-			json.dump(users_data, users_data_file, indent=4)
-		
-		# print(self.highest_score)
-		# print(self.user_highest_score)
-		
-		self.update_records()
-	
-	def update_records(self):
-		if self.user_highest_score < self.user_current_score:
-			self.user_highest_score = self.user_current_score
-		if self.highest_score < self.user_highest_score:
-			self.highest_score = self.user_highest_score
-		self.highest_score_label.config(text=f"Highest score(every users):\n{self.highest_score}")
-		self.user_highest_score_label.config(text=f"Highest score(current user):\n{self.user_highest_score}")
-		self.user_current_score_label.config(text=f"Current score:\n{self.user_current_score}")
-	
-	def store_data(self):
-		with open("users_data.json", "r+") as users_data_file:
-			users_data = json.load(users_data_file)
-			users_data[self.username]['score'] = self.user_highest_score
-			if users_data["highest"]["score"] <= self.user_highest_score:
-				users_data["highest"]["username"] = self.username
-				users_data["highest"]["score"] = self.user_highest_score
-			
-			users_data_file.seek(0, 0)
-			json.dump(users_data, users_data_file, indent=4)
