@@ -7,7 +7,7 @@ class Settings():
 		self.play_screen_height = 800
 		
 		self.scoreboard_width = self.screen_width - self.play_screen_width
-		self.scoreboard_height = int(self.screen_height/4)
+		self.scoreboard_height = 800
 		
 		# self.userboard_width = self.screen_width - self.play_screen_width
 		# self.userboard_height = int(self.screen_height/4)
