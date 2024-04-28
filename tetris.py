@@ -92,7 +92,45 @@ class Tetris():
 			self.pattern[index][0] = - old_patter[index][1]
 			self.pattern[index][1] = old_patter[index][0]
 		
-		self.set_up_boundaries()
+		# Predict no pattern doesn't applicable for four conditions
+		while True:
+			self.set_up_boundaries()
+			in_field = True
+			if self.left_x < 0:
+				in_field = False
+				difference = 0 - self.left_x
+				index = 0
+				while index < len(self.pattern):
+					self.pattern[index][0] += difference
+					index += 1
+				
+			elif self.right_x >= self.config.screen_column:
+				in_field = False
+				difference = self.config.screen_column - self.right_x
+				index = 0
+				while index < len(self.pattern):
+					self.pattern[index][0] += difference
+					index += 1
+			
+			if self.top_y < 0:
+				in_field = False
+				difference = 0 - self.top_y
+				index = 0
+				while index < len(self.pattern):
+					self.pattern[index][1] += difference
+					index += 1
+			
+			elif self.bottom_y >= self.config.screen_row:
+				in_field = False
+				difference = self.config.screen_row - self.bottom_y
+				index = 0
+				while index < len(self.pattern):
+					self.pattern[index][1] += difference
+					index += 1
+			
+			if in_field:
+				break
+		
 		
 		if self.collision_detect(blocks, (0, 0)):
 			self.pattern = [[__ for __ in _] for _ in old_patter]
