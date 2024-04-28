@@ -2,6 +2,7 @@ import pygame
 
 from settings import Settings
 from game_stats import GameStats
+from scoreboard import ScoreBoard
 from button import Button
 from tetris import Tetris
 
@@ -18,6 +19,8 @@ def run_game():
 	screen = pygame.display.set_mode((config.screen_width, config.screen_height))
 	pygame.display.set_caption("Tetris")
 	
+	scoreboard = ScoreBoard(config, stats, screen)
+	
 	blocks = []
 	current_tetris = Tetris(config, screen, stats)
 	
@@ -32,8 +35,8 @@ def run_game():
 		if stats.game_active:
 			if stats.tetris_controlling is False:
 				game_functions.initialize_new_term(config, screen, stats, blocks, current_tetris)
-			game_functions.update_tetris(config, stats, blocks, current_tetris)
-		game_functions.update_screen(config, screen, stats, blocks, play_button, current_tetris)
+			game_functions.update_tetris(config, stats, scoreboard, blocks, current_tetris)
+		game_functions.update_screen(config, screen, stats, scoreboard, blocks, play_button, current_tetris)
 
 
 run_game()
