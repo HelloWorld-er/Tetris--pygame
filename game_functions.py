@@ -70,13 +70,13 @@ def initialize_new_term(config, screen, stats, blocks, current_tetris):
 	stats.tetris_collide = False
 
 
-def update_tetris(config, stats, blocks, current_tetris):
+def update_tetris(config, stats, scoreboard, blocks, current_tetris):
 	if (stats.tetris_controlling and current_tetris.bottom_y == config.screen_row - 1) or stats.tetris_collide:
 		stats.tetris_controlling = False
-		check_completed_lines(config, blocks)
+		check_completed_lines(config, scoreboard, blocks)
 
 
-def check_completed_lines(config, blocks):
+def check_completed_lines(config, scoreboard, blocks):
 	row_index = 0
 	while row_index < config.screen_row:
 		column_index = 0
@@ -88,6 +88,9 @@ def check_completed_lines(config, blocks):
 			column_index += 1
 		if checker:
 			update_completed_line(blocks, row_index)
+			scoreboard.current_score += config.screen_column
+			scoreboard.update_score()
+			scoreboard.prep_msg()
 		else:
 			row_index += 1
 
@@ -112,7 +115,7 @@ def draw_grid(config, screen):
 		pygame.draw.line(screen, config.grid_color, (0, y), (config.play_screen_width, y))
 
 
-def update_screen(config, screen, stats, blocks, play_button, current_tetris):
+def update_screen(config, screen, stats, scoreboard, blocks, play_button, current_tetris):
 	screen.fill(config.bg_color)
 	
 	if stats.game_active is False:
@@ -121,7 +124,8 @@ def update_screen(config, screen, stats, blocks, play_button, current_tetris):
 	else:
 		draw_blocks(blocks)
 		draw_grid(config, screen)
-	# scoreboard.draw_scoreboard()
+	
+	scoreboard.draw_scoreboard()
 	
 	if stats.tetris_controlling and not stats.tetris_collide:
 		if stats.manual_timer_running is False:
