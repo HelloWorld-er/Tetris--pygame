@@ -1,4 +1,4 @@
 # Tetris--pygame
-'Tetris' using pygame
+python pygame
 
 In progress...
