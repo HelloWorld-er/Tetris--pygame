@@ -3,6 +3,10 @@ import sys
 
 
 class UISetting:
+	"""
+	Set the UI properties of a specific region.
+	
+	"""
 	def __init__(self, screen_width=1200, screen_height=800, screen_caption="", bg_color=(255, 255, 255)):
 		self.screen_width = screen_width
 		self.screen_height = screen_height
@@ -10,7 +14,7 @@ class UISetting:
 		self.bg_color = bg_color
 
 
-class Grid():
+class Grid:
 	def __init__(self, width, height):
 		self.width = width
 		self.height = height
