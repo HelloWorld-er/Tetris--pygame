@@ -2,12 +2,18 @@ import pygame
 import sys
 
 
-class UI:
+class UISetting:
 	def __init__(self, screen_width=1200, screen_height=800, screen_caption="", bg_color=(255, 255, 255)):
 		self.screen_width = screen_width
 		self.screen_height = screen_height
 		self.screen_caption = screen_caption
 		self.bg_color = bg_color
+
+
+class Grid():
+	def __init__(self, width, height):
+		self.width = width
+		self.height = height
 
 
 def check_loop():
@@ -26,7 +32,7 @@ def check_loop():
 def main():
 	pygame.init()
 	
-	main_window_ui = UI(screen_width=1200, screen_height=800, screen_caption="Tetris", bg_color=(60, 60, 60))
+	main_window_ui = UISetting(screen_width=1200, screen_height=800, screen_caption="Tetris", bg_color=(60, 60, 60))
 	
 	screen = pygame.display.set_mode((main_window_ui.screen_width, main_window_ui.screen_height))
 	pygame.display.set_caption(main_window_ui.screen_caption)
